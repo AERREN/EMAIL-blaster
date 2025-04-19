@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Secure Bulk Email Sender</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    h2 {
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    form {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      padding: 20px;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      animation: slideUp 1s ease-out;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      color: #fff;
+    }
+
+    input[type="email"],
+    input[type="password"],
+    input[name="smtp_server"],
+    input[name="smtp_port"] {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    input[type="email"]::placeholder,
+    input[type="password"]::placeholder,
+    input[name="smtp_server"]::placeholder,
+    input[name="smtp_port"]::placeholder {
+      color: #eeeeeeaa;
+      font-style: italic;
+    }
+
+    input:not([type="email"]):not([type="password"]):not([name="smtp_server"]):not([name="smtp_port"]),
+    textarea {
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    button {
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
+      color: white;
+      font-weight: bold;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #status {
+      background: #ffffff33;
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 30px;
+      width: 100%;
+      max-width: 600px;
+      height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      animation: fadeIn 1.2s ease-in-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>🔒 Secure Bulk Email Sender</h2>
+
+  <form id="emailForm">
+    <label>SMTP Server
+      <input type="text" name="smtp_server" required placeholder="e.g. smtp.gmail.com for google, smtp.yandex.com for yandex ">
+    </label>
+    <label>SMTP Port
+      <input type="number" name="smtp_port" required placeholder="e.g.587 for google, 465 for yandex ">
+    </label>
+    <label>Sender Email
+      <input type="email" name="sender_email" required placeholder="Your email address">
+    </label>
+    <label>Sender Password (App Password if Gmail)
+      <input type="password" name="sender_password" required placeholder="Your email password or app token">
+    </label>
+    <label>Reply-To Email
+      <input type="email" name="reply_to" required placeholder="Support or reply-to email">
+    </label>
+    <label>Email Subject
+      <input type="text" name="subject" required placeholder="Subject line for the email">
+    </label>
+    <label>Email Body
+      <textarea name="body" rows="5" required placeholder="Write your message here..."></textarea>
+    </label>
+    <label>Upload CSV or Excel file
+      <input type="file" name="file" required>
+    </label>
+    <button type="submit">🚀 Send Emails</button>
+  </form>
+
+  <div id="status">🕒 Waiting to send...</div>
+
+  <script>
+    const form = document.getElementById('emailForm');
+    const statusBox = document.getElementById('status');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      statusBox.textContent = "📨 Sending emails...";
+
+      const res = await fetch('/send', {
+        method: 'POST',
+        body: formData
+      });
+
+      const text = await res.text();
+      statusBox.textContent = text;
+
+      pollStatus();
+    });
+
+    async function pollStatus() {
+      const interval = setInterval(async () => {
+        const res = await fetch('/status');
+        const log = await res.json();
+        statusBox.textContent = log.join('\n');
+
+        if (log.some(line => line.includes("All emails sent") || line.includes("Failed to send"))) {
+          clearInterval(interval);
+        }
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
