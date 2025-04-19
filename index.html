@@ -5,125 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Secure Bulk Email Sender</title>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-      min-height: 100vh;
-      margin: 0;
-    }
-
-    h2 {
-      animation: fadeIn 1s ease-in-out;
-    }
-
-    form {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      padding: 20px;
-      border-radius: 20px;
-      width: 100%;
-      max-width: 600px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-      animation: slideUp 1s ease-out;
-    }
-
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: 600;
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: none;
-      border-radius: 10px;
-      font-size: 1rem;
-      color: #fff;
-    }
-
-    input[type="email"],
-    input[type="password"],
-    input[name="smtp_server"],
-    input[name="smtp_port"] {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
-      color: #fff;
-    }
-
-    input[type="email"]::placeholder,
-    input[type="password"]::placeholder,
-    input[name="smtp_server"]::placeholder,
-    input[name="smtp_port"]::placeholder {
-      color: #eeeeeeaa;
-      font-style: italic;
-    }
-
-    input:not([type="email"]):not([type="password"]):not([name="smtp_server"]):not([name="smtp_port"]),
-    textarea {
-      background: #f5f5f5;
-      color: #333;
-    }
-
-    button {
-      background: linear-gradient(135deg, #ff758c, #ff7eb3);
-      color: white;
-      font-weight: bold;
-      margin-top: 20px;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    #status {
-      background: #ffffff33;
-      backdrop-filter: blur(6px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
-      padding: 15px;
-      margin-top: 30px;
-      width: 100%;
-      max-width: 600px;
-      height: 200px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      color: #fff;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-      animation: fadeIn 1.2s ease-in-out;
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
+    /* Add your styles here */
   </style>
 </head>
 <body>
@@ -169,7 +51,8 @@
       const formData = new FormData(form);
       statusBox.textContent = "📨 Sending emails...";
 
-      const res = await fetch('/send', {
+      // Use your live backend URL here
+      const res = await fetch('https://bulk-email-api.onrender.com/send', { // replace with your live backend URL
         method: 'POST',
         body: formData
       });
@@ -182,7 +65,8 @@
 
     async function pollStatus() {
       const interval = setInterval(async () => {
-        const res = await fetch('/status');
+        // Use your live backend status URL
+        const res = await fetch('https://bulk-email-api.onrender.com/status'); // replace with your live backend URL
         const log = await res.json();
         statusBox.textContent = log.join('\n');
 
