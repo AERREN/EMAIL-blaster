@@ -5,7 +5,118 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Secure Bulk Email Sender</title>
   <style>
-    /* Add your styles here */
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      min-height: 100vh;
+      margin: 0;
+      backdrop-filter: blur(3px);
+    }
+
+    h2 {
+      animation: fadeIn 1.2s ease-in-out;
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    form {
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 25px 30px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      animation: slideUp 1s ease-out;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+
+    input, textarea {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #ccc;
+      font-style: italic;
+    }
+
+    button {
+      width: 100%;
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      color: white;
+      font-size: 1.1rem;
+      font-weight: bold;
+      padding: 12px 0;
+      margin-top: 25px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    #status {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(6px);
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 30px;
+      width: 100%;
+      max-width: 600px;
+      color: #fff;
+      font-weight: 500;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 1.2s ease-in-out;
+      min-height: 150px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
   </style>
 </head>
 <body>
@@ -13,10 +124,10 @@
 
   <form id="emailForm">
     <label>SMTP Server
-      <input type="text" name="smtp_server" required placeholder="e.g. smtp.gmail.com for google, smtp.yandex.com for yandex ">
+      <input type="text" name="smtp_server" required placeholder="e.g. smtp.gmail.com for google, smtp.yandex.com for yandex">
     </label>
     <label>SMTP Port
-      <input type="number" name="smtp_port" required placeholder="e.g.587 for google, 465 for yandex ">
+      <input type="number" name="smtp_port" required placeholder="e.g. 587 for Gmail, 465 for Yandex">
     </label>
     <label>Sender Email
       <input type="email" name="sender_email" required placeholder="Your email address">
@@ -51,8 +162,7 @@
       const formData = new FormData(form);
       statusBox.textContent = "📨 Sending emails...";
 
-      // Use your live backend URL here
-      const res = await fetch('https://bulk-email-api.onrender.com/send', { // replace with your live backend URL
+      const res = await fetch('https://bulk-email-api.onrender.com/send', {
         method: 'POST',
         body: formData
       });
@@ -65,8 +175,7 @@
 
     async function pollStatus() {
       const interval = setInterval(async () => {
-        // Use your live backend status URL
-        const res = await fetch('https://bulk-email-api.onrender.com/status'); // replace with your live backend URL
+        const res = await fetch('https://bulk-email-api.onrender.com/status');
         const log = await res.json();
         statusBox.textContent = log.join('\n');
 
