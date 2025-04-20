@@ -126,7 +126,7 @@
       statusBox.textContent = "📨 Sending emails...";
 
       try {
-        const res = await fetch('https://email-backend-6d72.onrender.com/send', {
+        const res = await fetch('https://email-backend-1.onrender.com/send', {
           method: 'POST',
           body: formData
         });
@@ -142,7 +142,7 @@
     async function pollStatus() {
       const interval = setInterval(async () => {
         try {
-          const res = await fetch('https://email-backend-6d72.onrender.com/status');
+          const res = await fetch('https://email-backend-1.onrender.com/status');
           const log = await res.json();
           statusBox.textContent = log.join('\n');
 
